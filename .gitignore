@@ -25,5 +25,5 @@ package-lock.json
 yarn.lock
 
 # generated
-docs
-converted-docs
+# docs
+# converted-docs
