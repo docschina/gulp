@@ -22,11 +22,11 @@ module.exports = {
         target: '_self',
       },
       links: [
-        { to: 'docs/en/getting-started/quick-start',
+        { to: 'docs/cn/getting-started/quick-start',
           label: 'Get Started',
           position: 'left',
         },
-        { to: 'docs/en/api/concepts',
+        { to: 'docs/cn/api/concepts',
           label: 'API',
           position: 'left',
         },
@@ -40,7 +40,7 @@ module.exports = {
           position: 'left',
         },
         {
-          to: 'docs/en/support/for-enterprise',
+          to: 'docs/cn/support/for-enterprise',
           label: 'Enterprise',
           position: 'left',
           emphasis: true,
@@ -69,10 +69,10 @@ module.exports = {
         },
         { title: 'Docs',
           items: [
-            { to: 'docs/en/getting-started/quick-start',
+            { to: 'docs/cn/getting-started/quick-start',
               label: 'Getting Started',
             },
-            { to: 'docs/en/api/concepts',
+            { to: 'docs/cn/api/concepts',
               label: 'API',
             },
           ]
