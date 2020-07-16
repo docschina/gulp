@@ -7,11 +7,8 @@
   },
   "scripts": {
     "fetch-docs": "gulp",
-    "prestart": "npm run fetch-docs",
     "start": "docusaurus start",
-    "prebuild": "npm run fetch-docs",
     "build": "docusaurus build",
-    "predeploy": "npm run fetch-docs",
     "deploy": "docusaurus deploy",
     "swizzle": "docusaurus swizzle"
   },

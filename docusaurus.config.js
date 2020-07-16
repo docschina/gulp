@@ -181,7 +181,7 @@ module.exports = {
       sidebarPath: require.resolve('./sidebars.json'),
       // This is a holdover because we set up original docusaurus
       // to support translations and v2 doesn't support them yet
-      routeBasePath: 'docs/en/',
+      routeBasePath: 'docs/cn/',
     }],
     "docusaurus-plugin-sass",
     ['@docusaurus/plugin-content-pages', {}],
