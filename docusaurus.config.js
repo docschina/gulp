@@ -13,7 +13,10 @@ module.exports = {
   projectName: 'gulpjs.github.io',
   // The theme
   themeConfig: {
-    disableDarkMode: true,
+    colorMode: {
+      defaultMode: 'light',
+      disableSwitch: true,
+    },
     navbar: {
       logo: {
         alt: 'gulp',
@@ -21,7 +24,7 @@ module.exports = {
         href: '/',
         target: '_self',
       },
-      links: [
+      items: [
         {
           to: 'docs/en/getting-started/quick-start',
           label: 'Get Started',
@@ -177,6 +180,15 @@ module.exports = {
           flexBasis: '80px',
         },
       },
+      {
+        href: 'https://word.tips/',
+        src: 'sponsor-logos/word-tips.png',
+        alt: 'WordTips logo',
+        title: 'WordTips',
+        style: {
+          flexBasis: '150px',
+        },
+      },
     ]
   },
   stylesheets: [
@@ -196,7 +208,7 @@ module.exports = {
       // to support translations and v2 doesn't support them yet
       routeBasePath: 'docs/en/',
     }],
-    "docusaurus-plugin-sass",
+    ['docusaurus-plugin-sass', {}],
     ['@docusaurus/plugin-content-pages', {}],
     isProd && ['@docusaurus/plugin-google-analytics', {}],
     isProd && ['@docusaurus/plugin-google-gtag', {}],
