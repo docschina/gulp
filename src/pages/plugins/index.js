@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 
 import Layout from '@theme/Layout';
@@ -16,6 +16,7 @@ function isInternalKeyword(keyword) {
 class Plugin {
   constructor(object) {
     this._package = object.package;
+    this._flags = object.flags ? object.flags : {};
   }
 
   get key() {
@@ -24,6 +25,16 @@ class Plugin {
 
   get name() {
     return this._package.name;
+  }
+
+  get isDeprecated() {
+    const isDeprecated = this._flags.deprecated ? true : false;
+    return isDeprecated;
+  }
+
+  get deprecatedMessage() {
+    const deprecatedMessage = this._flags.deprecated ? this._flags.deprecated : '';
+    return deprecatedMessage;
   }
 
   get description() {
@@ -62,9 +73,9 @@ class Plugin {
     }
 
     if (homepage &&
-        homepage !== npm &&
-        homepage !== repository &&
-        homepage !== `${repository}#readme`) {
+      homepage !== npm &&
+      homepage !== repository &&
+      homepage !== `${repository}#readme`) {
       links.push({ text: 'homepage', href: homepage });
     }
 
@@ -87,7 +98,7 @@ function PluginFooter({ keywords = [] }) {
     return (
       <div className="card__footer">
         <ul className={classnames('pills padding-top--sm text--normal text--right', styles.pluginCardKeywords)}>
-          {keywords.map((keyword) => <li key={keyword} className="pill-item">{keyword}</li>)}
+          {keywords.map((keyword) => <li key={keyword} className={styles.pillsItem}>{keyword}</li>)}
         </ul>
       </div>
     );
@@ -95,21 +106,30 @@ function PluginFooter({ keywords = [] }) {
 }
 
 function PluginComponent({ plugin }) {
+  const { isDeprecated, deprecatedMessage } = plugin
+  const cardClasses = classnames('card', { [styles.pluginDeprecatedCard]: isDeprecated });
+  const cardHeaderClasses = classnames('card__header', {
+    [styles.pluginCardHeader]: !isDeprecated,
+    [styles.deprecatedCardHeader]: isDeprecated
+  });
+  const cardBodyClasses = 'card__body';
+
   return (
     <div className="row padding-vert--md">
       <div className="col col--10 col--offset-1">
-        <div key={plugin.key} className="card">
-          <div className={classnames('card__header', styles.pluginCardHeader)}>
+        <div key={plugin.key} className={cardClasses}>
+          <div className={cardHeaderClasses}>
+            {isDeprecated && <span className="badge badge--primary">Deprecated</span>}
             <h2><a className={styles.primaryUrl} href={plugin.primaryUrl}>{plugin.name}</a></h2>
-            <span className="badge badge--primary">{plugin.version}</span>
+            {!isDeprecated && <span className="badge badge--primary">{plugin.version}</span>}
           </div>
-          <div className="card__body">
-            {plugin.description}
+          <div className={cardBodyClasses}>
+            {isDeprecated ? <div className={styles.deprecatedMessage}>{deprecatedMessage}</div> : plugin.description}
             <div className="padding-top--sm">
               {plugin.links.map((link) => <a key={link.text} className="padding-right--sm" href={link.href}>{link.text}</a>)}
             </div>
           </div>
-          <PluginFooter keywords={plugin.keywords} />
+          {!isDeprecated && <PluginFooter keywords={plugin.keywords} />}
         </div>
       </div>
     </div>
@@ -120,7 +140,7 @@ function noop(evt) {
   evt && evt.preventDefault();
 }
 
-function Paginate({onPage = noop}) {
+function Paginate({ onPage = noop }) {
   return (
     <div className="row padding-vert--md">
       <div className="col col--4 col--offset-4">
@@ -141,7 +161,6 @@ function keywordsToQuerystring(keywords) {
   } else {
     keywordsStr += `gulpplugin`;
   }
-
   return keywordsStr;
 }
 
@@ -150,6 +169,8 @@ async function fetchPackages(keywords, searchText = '', pageNumber = 0) {
 
   let search = [
     keywordsToQuerystring(keywords),
+    "is:unstable",
+    "not:unstable"
   ];
   if (searchText) {
     search.push(encodeURIComponent(searchText));
@@ -159,11 +180,12 @@ async function fetchPackages(keywords, searchText = '', pageNumber = 0) {
   const text = search.join(' ');
 
   try {
-    const initialUrl = `${baseUrl}?from=${from}&text=${text}`;
+    // https://github.com/npm/registry/blob/master/docs/REGISTRY-API.md#get-v1search
+    const initialUrl = `${baseUrl}?from=${from}&text=${text}&quality=0.5&popularity=1.0&maintenance=0.1`;
     const response = await fetch(initialUrl);
     const { total, objects } = await response.json();
     return { total, plugins: objects.map(toPlugin) };
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     return { total: 0, plugins: [] };
   }
@@ -277,7 +299,7 @@ function useSearch() {
 
 
 function PluginsPage() {
-  const [{title, plugins, placeholder, hasMore}, {search, paginate}] = useSearch();
+  const [{ title, plugins, placeholder, hasMore }, { search, paginate }] = useSearch();
   const [searchInput, setSearchInput] = useState(``);
 
   let onSubmit = (evt) => {
