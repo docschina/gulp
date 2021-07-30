@@ -5,33 +5,32 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, {useCallback, useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import isInternalUrl from '@docusaurus/isInternalUrl';
+import { useLocation } from '@docusaurus/router';
 
 import SearchBar from '@theme/SearchBar';
-import Toggle from '@theme/Toggle';
 import useThemeContext from '@theme/hooks/useThemeContext';
 import useHideableNavbar from '@theme/hooks/useHideableNavbar';
-import useLogo from '@theme/hooks/useLogo';
-
+import Logo from '@theme/Logo';
 import styles from './styles.module.css';
 
-function noop() {}
+function noop() { }
 
 const useLinkLogo = (logo = {}) => {
   const {
-    siteConfig: {baseUrl} = {},
+    siteConfig: { baseUrl } = {},
   } = useDocusaurusContext();
-  const {isDarkTheme} = useThemeContext();
+  const { isDarkTheme } = useThemeContext();
   const logoLink = logo.href || baseUrl;
   let logoLinkProps = {};
 
   if (logo.target) {
-    logoLinkProps = {target: logo.target};
+    logoLinkProps = { target: logo.target };
   } else if (!isInternalUrl(logoLink)) {
     logoLinkProps = {
       rel: 'noopener noreferrer',
@@ -48,10 +47,10 @@ const useLinkLogo = (logo = {}) => {
   };
 };
 
-function NavLink({activeBasePath, to, href, logo, label, position, ...props}) {
+function NavLink({ activeBasePath, to, href, logo, label, position, ...props }) {
   const toUrl = useBaseUrl(to);
   const activeBaseUrl = useBaseUrl(activeBasePath);
-  const {logoImageUrl, logoAlt} = useLinkLogo(logo);
+  const { logoImageUrl, logoAlt } = useLinkLogo(logo);
 
   const content = logoImageUrl != null ? <img
     className={classnames(styles.navbarIcon)}
@@ -62,27 +61,27 @@ function NavLink({activeBasePath, to, href, logo, label, position, ...props}) {
     <Link
       {...(href
         ? {
-            target: '_blank',
-            rel: 'noopener noreferrer',
-            href,
-          }
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          href,
+        }
         : {
-            activeClassName: 'navbar__link--active',
-            to: toUrl,
-            ...(activeBasePath
-              ? {
-                  isActive: (_match, location) =>
-                    location.pathname.startsWith(activeBaseUrl),
-                }
-              : null),
-          })}
+          activeClassName: 'navbar__link--active',
+          to: toUrl,
+          ...(activeBasePath
+            ? {
+              isActive: (_match, location) =>
+                location.pathname.startsWith(activeBaseUrl),
+            }
+            : null),
+        })}
       {...props}>
       {content}
     </Link>
   );
 }
 
-function NavItem({items, emphasis, position, ...props}) {
+function NavItem({ items, emphasis, position, ...props }) {
   if (!items) {
     return <NavLink className={classnames('navbar__item', 'navbar__link', {
       'navbar__link--icon': props.logo,
@@ -111,25 +110,25 @@ function NavItem({items, emphasis, position, ...props}) {
   );
 }
 
+function notPluginPage(pathname) {
+  return pathname !== '/plugins' && pathname !== '/plugins/';
+}
 
 function Navbar() {
   const {
     siteConfig: {
       themeConfig: {
-        navbar: {title, links = [], hideOnScroll = false} = {},
-        disableDarkMode = false,
+        navbar: { items = [], hideOnScroll = false } = {},
       },
     },
-    isClient,
   } = useDocusaurusContext();
-  const {isDarkTheme, setLightTheme, setDarkTheme} = useThemeContext();
-  const {navbarRef, isNavbarVisible} = useHideableNavbar(hideOnScroll);
-  const {logoLink, logoLinkProps, logoImageUrl, logoAlt} = useLogo();
 
-  const onToggleChange = useCallback(
-    e => (e.target.checked ? setDarkTheme() : setLightTheme()),
-    [setLightTheme, setDarkTheme],
-  );
+  const location = useLocation();
+  const [enableSearch, setEnableSearch] = useState(notPluginPage(location.pathname));
+  useEffect(() => {
+    setEnableSearch(notPluginPage(location.pathname));
+  }, [location]);
+  const { navbarRef, isNavbarVisible } = useHideableNavbar(hideOnScroll);
 
   return (
     <nav
@@ -140,40 +139,28 @@ function Navbar() {
       })}>
       <div className="navbar__inner">
         <div className="navbar__items">
-          <Link className="navbar__brand" to={logoLink} {...logoLinkProps}>
-            {logoImageUrl != null && (
-              <img
-                key={isClient}
-                className="navbar__logo"
-                src={logoImageUrl}
-                alt={logoAlt}
-              />
-            )}
-          </Link>
-          {links
+          <Logo
+            className="navbar__brand"
+            imageClassName="navbar__logo"
+          />
+          {items
             .filter(linkItem => linkItem.position === 'left')
             .map((linkItem, i) => (
               <NavItem {...linkItem} key={i} />
             ))}
         </div>
         <div className="navbar__items navbar__items--right">
-          {links
+          {items
             .filter(linkItem => linkItem.position === 'right')
             .map((linkItem, i) => (
               <NavItem {...linkItem} key={i} />
             ))}
-          {!disableDarkMode && (
-            <Toggle
-              className={styles.displayOnlyInLargeViewport}
-              aria-label="Dark mode toggle"
-              checked={isDarkTheme}
-              onChange={onToggleChange}
+          {enableSearch && (
+            <SearchBar
+              handleSearchBarToggle={noop}
+              isSearchBarExpanded={true}
             />
           )}
-          <SearchBar
-            handleSearchBarToggle={noop}
-            isSearchBarExpanded={true}
-          />
         </div>
       </div>
     </nav>

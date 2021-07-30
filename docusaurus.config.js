@@ -13,7 +13,10 @@ module.exports = {
   projectName: 'gulpjs.github.io',
   // The theme
   themeConfig: {
-    disableDarkMode: true,
+    colorMode: {
+      defaultMode: 'light',
+      disableSwitch: true,
+    },
     navbar: {
       logo: {
         alt: 'gulp',
@@ -21,16 +24,28 @@ module.exports = {
         href: '/',
         target: '_self',
       },
+<<<<<<< HEAD
       links: [
         { to: 'docs/cn/getting-started/quick-start',
           label: 'Get Started',
           position: 'left',
         },
         { to: 'docs/cn/api/concepts',
+=======
+      items: [
+        {
+          to: 'docs/en/getting-started/quick-start',
+          label: 'Get Started',
+          position: 'left',
+        },
+        {
+          to: 'docs/en/api/concepts',
+>>>>>>> 8b5b2f9d6fde55aa4585561068909469863124df
           label: 'API',
           position: 'left',
         },
-        { to: 'plugins',
+        {
+          to: 'plugins',
           label: 'Plugins',
           position: 'left',
         },
@@ -45,14 +60,16 @@ module.exports = {
           position: 'left',
           emphasis: true,
         },
-        { href: 'https://twitter.com/gulpjs',
+        {
+          href: 'https://twitter.com/gulpjs',
           logo: {
             alt: 'Gulp on Twitter',
             src: 'img/twitter.svg',
           },
           position: 'right'
         },
-        { href: 'https://medium.com/gulpjs',
+        {
+          href: 'https://medium.com/gulpjs',
           logo: {
             alt: 'The gulp blog',
             src: 'img/medium.svg',
@@ -63,29 +80,44 @@ module.exports = {
     },
     footer: {
       links: [
-        { items: [
+        {
+          items: [
             { html: '<img src="/img/gulp-white-logo.svg" alt="gulp" href="/" />' }
           ]
         },
-        { title: 'Docs',
+        {
+          title: 'Docs',
           items: [
+<<<<<<< HEAD
             { to: 'docs/cn/getting-started/quick-start',
               label: 'Getting Started',
             },
             { to: 'docs/cn/api/concepts',
+=======
+            {
+              to: 'docs/en/getting-started/quick-start',
+              label: 'Getting Started',
+            },
+            {
+              to: 'docs/en/api/concepts',
+>>>>>>> 8b5b2f9d6fde55aa4585561068909469863124df
               label: 'API',
             },
           ]
         },
-        { title: 'Community',
+        {
+          title: 'Community',
           items: [
-            { href: 'https://github.com/gulpjs/gulp',
+            {
+              href: 'https://github.com/gulpjs/gulp',
               label: 'GitHub',
             },
-            { href: 'https://stackoverflow.com/questions/tagged/gulp',
+            {
+              href: 'https://stackoverflow.com/questions/tagged/gulp',
               label: 'Stack Overflow',
             },
-            { href: 'https://twitter.com/gulpjs',
+            {
+              href: 'https://twitter.com/gulpjs',
               label: 'Twitter',
             }
           ]
@@ -164,6 +196,24 @@ module.exports = {
           flexBasis: '80px',
         },
       },
+      {
+        href: 'https://word.tips/',
+        src: 'sponsor-logos/word-tips.png',
+        alt: 'WordTips logo',
+        title: 'WordTips',
+        style: {
+          flexBasis: '150px',
+        },
+      },
+      {
+        href: 'https://developer.americanexpress.com',
+        src: 'sponsor-logos/american-express.svg',
+        alt: 'American Express',
+        title: 'American Express',
+        style: {
+          flexBasis: '145px',
+        },
+      },
     ]
   },
   stylesheets: [
@@ -183,7 +233,7 @@ module.exports = {
       // to support translations and v2 doesn't support them yet
       routeBasePath: 'docs/cn/',
     }],
-    "docusaurus-plugin-sass",
+    ['docusaurus-plugin-sass', {}],
     ['@docusaurus/plugin-content-pages', {}],
     isProd && ['@docusaurus/plugin-google-analytics', {}],
     isProd && ['@docusaurus/plugin-google-gtag', {}],
